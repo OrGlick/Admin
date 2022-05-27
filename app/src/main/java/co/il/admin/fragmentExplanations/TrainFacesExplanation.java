@@ -110,11 +110,13 @@ public class TrainFacesExplanation extends Fragment implements View.OnClickListe
 
     public void saveUserToFireBase(CreatePersonResult createPersonResult)
     {
-        user = new User("", currentConnectedUser.getUid(), currentConnectedUser.getDisplayName()
-                , String.valueOf(createPersonResult.personId));
         userReference = firebaseDatabase.getReference("Users").push();
-        user.key = userReference.getKey();
+        String databaseKey = userReference.getKey();
+        String firebaseUid = currentConnectedUser.getUid();
+        String nameFromFirebase = currentConnectedUser.getDisplayName();
+        String azurePersonId = String.valueOf(createPersonResult.personId);
 
+        user = new User(databaseKey, firebaseUid, nameFromFirebase, azurePersonId);
         userReference.setValue(user);
     }
 
@@ -186,9 +188,8 @@ public class TrainFacesExplanation extends Fragment implements View.OnClickListe
                                     return true;
                                 }
                             });
-                            // TODO: 24/04/2022 create an array of addFaceThread and use it (if it crashes)
                             AddFaceThread addFaceThread = new AddFaceThread(handler, inputStream,
-                                    user.personId);
+                                    user.azurePersonId);
                             addFaceThread.start();
                         }
                     }

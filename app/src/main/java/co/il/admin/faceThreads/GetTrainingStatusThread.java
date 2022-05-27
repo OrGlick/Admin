@@ -26,7 +26,14 @@ public class GetTrainingStatusThread extends Thread
 
         boolean isDone = false;
 
-        Message message = new Message();
+        Message[] messages = new Message[1000];
+        Message[] errorMessages = new Message[1000];
+        for (int i = 0; i < messages.length; i++)
+        {
+            messages[i] = new Message();
+            errorMessages[i] = new Message();
+        }
+        int count = 0;
         String exceptionMessage;
         while (!isDone)
         {
@@ -34,18 +41,18 @@ public class GetTrainingStatusThread extends Thread
             {
                 TrainingStatus status = MyFaceClient.faceServiceClient
                         .getPersonGroupTrainingStatus(Helper.PERSON_GROUP_ID);
-                message.what = Helper.SUCCESS_CODE;
-                message.obj = status;
+                messages[count].what = Helper.SUCCESS_CODE;
+                messages[count].obj = status;
                 if (status.status == TrainingStatus.Status.Succeeded)
                     isDone = true;
             }
             catch (ClientException | IOException e)
             {
                 exceptionMessage = String.format("error on getting training status: %s", e.getMessage());
-                message.obj = exceptionMessage;
-                message.what = Helper.ERROR_CODE;
+                messages[count].obj = exceptionMessage;
+                messages[count].what = Helper.ERROR_CODE;
             }
-            handler.sendMessage(message);
+            handler.sendMessage(messages[count]);
             try
             {
                 Thread.sleep(3000);
@@ -53,11 +60,11 @@ public class GetTrainingStatusThread extends Thread
             catch (Exception e)
             {
                 exceptionMessage = String.format("error on getting training status: %s", e.getMessage());
-                message.obj = exceptionMessage;
-                message.what = Helper.ERROR_CODE;
-                handler.sendMessage(message);
+                errorMessages[count].obj = exceptionMessage;
+                errorMessages[count].what = Helper.ERROR_CODE;
+                handler.sendMessage(errorMessages[count]);
             }
-
+            count++;
         }
     }
 }

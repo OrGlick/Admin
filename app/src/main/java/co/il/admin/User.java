@@ -5,20 +5,20 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class User
 {
-    public String key;
-    public String uid;
-    public String name;
-    public String personId;
+    public String databaseKey;
+    public String firebaseUid;
+    public String nameFromFirebase;
+    public String azurePersonId;
 
-    public User(){
+    public User() {
         //required
     }
 
-    public User(String key, String uid, String name, String personId)
+    public User(String databaseKey, String firebaseUid, String nameFromFirebase, String azurePersonId)
     {
-        this.key = key;
-        this.uid = uid;
-        this.name = name;
-        this.personId = personId;
+        this.databaseKey = databaseKey;
+        this.firebaseUid = firebaseUid;
+        this.nameFromFirebase = nameFromFirebase;
+        this.azurePersonId = azurePersonId;
     }
 }
