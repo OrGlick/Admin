@@ -3,35 +3,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragmentExplanations.SignInExplanation"
+    tools:context=".Fragments.SignInExplanation"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="בסיסמה הזן את מספר תעודת הזהות ואחריו את תאריך הנפקת תעודת הזהות."
-        android:textSize="20sp"
-        android:textColor="@color/black"/>
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="241dp"
+        android:background="@drawable/lock1"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center"
+        />
 
-    <TextView
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/edit_text_email"
+        android:layout_marginTop="50dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:hint="אימייל"
+        android:layout_gravity="center"
+        />
+
+    <EditText
+        android:id="@+id/edit_text_password"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="לדוגמה אם מספר תעודת הזהות הוא 123456789, ותאריך ההנפקה הוא 01.2016, הסיסמה תהיה 123456789012016"
-        android:textSize="20sp"
-        android:textColor="@color/black"/>
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="תעודת זהות"
+        android:inputType="numberPassword"
+        android:layout_gravity="center"
+        />
 
     <Button
-        android:id="@+id/button_start_to_register"
+        android:id="@+id/button_select_id_date"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:text="בחר תאריך הנפקת תעודת זהות"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:text="המשך" />
+        />
+
+    <TextView
+        android:id="@+id/tv_show_selected_id_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/black"
+        />
+
+    <Button
+        android:id="@+id/button_confirm_email_and_password"
+        android:layout_marginTop="50dp"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="אישור"
+        />
 
 </LinearLayout>

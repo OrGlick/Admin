@@ -1,4 +1,4 @@
-package co.il.admin.fragmentExplanations;
+package co.il.admin.Fragments;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -36,13 +36,12 @@ import com.microsoft.projectoxford.face.contract.CreatePersonResult;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Objects;
 
 import co.il.admin.R;
 import co.il.admin.ShowTrainingStatus;
 import co.il.admin.User;
-import co.il.admin.faceThreads.AddFaceThread;
-import co.il.admin.faceThreads.CreatePersonThread;
+import co.il.admin.FaceThreads.AddFaceThread;
+import co.il.admin.FaceThreads.CreatePersonThread;
 import co.il.admin.Helper;
 
 public class TrainFacesExplanation extends Fragment implements View.OnClickListener {
@@ -119,12 +118,10 @@ public class TrainFacesExplanation extends Fragment implements View.OnClickListe
     public void saveUserToFireBase(CreatePersonResult createPersonResult)
     {
         userReference = firebaseDatabase.getReference("Users/" + currentConnectedUser.getUid());
-        String databaseKey = userReference.getKey();
-        String firebaseUid = currentConnectedUser.getUid();
         String nameFromFirebase = currentConnectedUser.getDisplayName();
         String azurePersonId = String.valueOf(createPersonResult.personId);
 
-        user = new User(databaseKey, firebaseUid, nameFromFirebase, azurePersonId);
+        user = new User(nameFromFirebase, azurePersonId);
         userReference.setValue(user);
     }
 

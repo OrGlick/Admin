@@ -5,9 +5,6 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class User
 {
-    public String databaseKey;
-    public String firebaseUid;
-    public String nameFromFirebase;
     public String azurePersonId;
     public boolean isVoted;
     public boolean isBlocked;
@@ -16,38 +13,11 @@ public class User
         //required
     }
 
-    public User(String databaseKey, String firebaseUid, String nameFromFirebase, String azurePersonId)
+    public User(String nameFromFirebase, String azurePersonId)
     {
-        this.databaseKey = databaseKey;
-        this.firebaseUid = firebaseUid;
-        this.nameFromFirebase = nameFromFirebase;
         this.azurePersonId = azurePersonId;
         this.isVoted = false;
         this.isBlocked = false;
-    }
-
-    public String getDatabaseKey() {
-        return databaseKey;
-    }
-
-    public void setDatabaseKey(String databaseKey) {
-        this.databaseKey = databaseKey;
-    }
-
-    public String getFirebaseUid() {
-        return firebaseUid;
-    }
-
-    public void setFirebaseUid(String firebaseUid) {
-        this.firebaseUid = firebaseUid;
-    }
-
-    public String getNameFromFirebase() {
-        return nameFromFirebase;
-    }
-
-    public void setNameFromFirebase(String nameFromFirebase) {
-        this.nameFromFirebase = nameFromFirebase;
     }
 
     public String getAzurePersonId() {

@@ -15,10 +15,8 @@ import android.widget.TextView;
 
 import com.microsoft.projectoxford.face.contract.TrainingStatus;
 
-import java.util.Objects;
-
-import co.il.admin.faceThreads.GetTrainingStatusThread;
-import co.il.admin.faceThreads.TrainThread;
+import co.il.admin.FaceThreads.GetTrainingStatusThread;
+import co.il.admin.FaceThreads.TrainThread;
 
 public class ShowTrainingStatus extends Fragment
 {

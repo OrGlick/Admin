@@ -1,0 +1,156 @@
+@startuml
+class co.il.admin.AddUsers {
+~ FragmentManager fragmentManager
+# void onCreate(Bundle)
+}
+class co.il.admin.AzureCreds {
+- String endPoint
+- String apiKey
++ <<Create>> AzureCreds(String,String)
++ <<Create>> AzureCreds()
++ String getEndPoint()
++ String getApiKey()
++ void setEndPoint(String)
++ void setApiKey(String)
+}
+class co.il.admin.faceThreads.TrainThread {
+~ Handler handler
+~ FaceServiceClient faceServiceClient
++ <<Create>> TrainThread(Handler)
++ void run()
+}
+class co.il.admin.faceThreads.CreatePersonThread {
+~ Handler handler
+~ FaceServiceClient faceServiceClient
++ <<Create>> CreatePersonThread(Handler)
++ void run()
+}
+class co.il.admin.User {
++ String azurePersonId
++ boolean isVoted
++ boolean isBlocked
++ <<Create>> User()
++ <<Create>> User(String,String)
++ String getAzurePersonId()
++ void setAzurePersonId(String)
++ boolean getIsVoted()
++ void setIsVoted(boolean)
++ boolean getIsBlocked()
++ void setIsBlocked(boolean)
+}
+class co.il.admin.MainActivity {
+~ EditText etEmail
+~ Button btnConfirm
+~ String email
+~ FirebaseAuth auth
+~ FirebaseUser firebaseUser
+~ ProgressDialog progressDialog
+# void onCreate(Bundle)
+- void inIt()
++ void onClick(View)
+- void showErrorAndCloseProgressDialog()
+- void removeSpacesFromTheEnd()
+- boolean isEmailValid(String)
+- boolean isPasswordValid(String)
+}
+class co.il.admin.faceThreads.GetTrainingStatusThread {
+~ Handler handler
+~ FaceServiceClient faceServiceClient
++ <<Create>> GetTrainingStatusThread(Handler)
++ void run()
+}
+class co.il.admin.Helper {
++ {static} int SUCCESS_CODE
++ {static} int ERROR_CODE
++ {static} String PERSON_GROUP_ID
++ {static} void showError(String,Context)
+}
+class co.il.admin.ControlActivity {
+~ Button btnAddUsers
+~ TextView tvElectionDate
+~ DatePickerDialog datePickerDialog
+~ FirebaseDatabase firebaseDatabase
+~ DatabaseReference databaseReference
+# void onCreate(Bundle)
+- void init()
+- void initDatePickerDialog()
+- String makeDateString(int,int,int)
+- void showCurrentElectionsDate()
+- void showSuccessUserAdding()
++ void onClick(View)
+}
+class co.il.admin.ShowTrainingStatus {
+~ View view
+~ TextView textView
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void train()
+- void showTrainingStatus()
+}
+class co.il.admin.fragmentExplanations.SignInExplanation {
+~ View view
+~ EditText etEmail
+~ TextView tvShowSelectedDate
+~ Button btnConfirm
+~ String email
+~ DatePickerDialog datePickerDialog
+- FirebaseAuth auth
+- FirebaseUser firebaseUser
+~ ProgressDialog progressDialog
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void inIt()
+- void initDatePickerDialog()
+- String makeDateString(int,int,int)
++ void onClick(View)
+- void showErrorAndCloseProgressDialog()
+- void removeSpacesFromTheEnd()
+- boolean isEmailValid(String)
+- boolean isIdValid(String)
+- void moveToTrainFacesFragment()
+}
+class co.il.admin.faceThreads.AddFaceThread {
+~ Handler handler
+~ ByteArrayInputStream inputStream
+~ String personId
+~ FaceServiceClient faceServiceClient
++ <<Create>> AddFaceThread(Handler,ByteArrayInputStream,String)
++ void run()
+}
+class co.il.admin.fragmentExplanations.TrainFacesExplanation {
+~ View view
+~ Button btnContinueToCamera
+~ ActivityResultLauncher<Intent> activityResultLauncher
+~ ProgressBar progressBar
+~ ProgressDialog progressDialog
+~ User user
+~ boolean personCreated
+~ FirebaseDatabase firebaseDatabase
+~ DatabaseReference userReference
+~ FirebaseAuth firebaseAuth
+~ FirebaseUser currentConnectedUser
+- ActivityResultLauncher<String> requestPermissionLauncher
+~ int count
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
++ void onClick(View)
+- void createPerson()
++ void saveUserToFireBase(CreatePersonResult)
+- void checkAndAskForPermissionsAndAddTheFaces()
+- void addFaces()
+- void handleImage()
+}
+
+
+androidx.appcompat.app.AppCompatActivity <|-- co.il.admin.AddUsers
+co.il.admin.faceThreads.Thread <|-- co.il.admin.faceThreads.TrainThread
+co.il.admin.faceThreads.Thread <|-- co.il.admin.faceThreads.CreatePersonThread
+co.il.admin.OnClickListener <|.. co.il.admin.MainActivity
+androidx.appcompat.app.AppCompatActivity <|-- co.il.admin.MainActivity
+co.il.admin.faceThreads.Thread <|-- co.il.admin.faceThreads.GetTrainingStatusThread
+co.il.admin.OnClickListener <|.. co.il.admin.ControlActivity
+androidx.appcompat.app.AppCompatActivity <|-- co.il.admin.ControlActivity
+androidx.fragment.app.Fragment <|-- co.il.admin.ShowTrainingStatus
+co.il.admin.fragmentExplanations.OnClickListener <|.. co.il.admin.fragmentExplanations.SignInExplanation
+androidx.fragment.app.Fragment <|-- co.il.admin.fragmentExplanations.SignInExplanation
+co.il.admin.faceThreads.Thread <|-- co.il.admin.faceThreads.AddFaceThread
+co.il.admin.fragmentExplanations.OnClickListener <|.. co.il.admin.fragmentExplanations.TrainFacesExplanation
+androidx.fragment.app.Fragment <|-- co.il.admin.fragmentExplanations.TrainFacesExplanation
+@enduml

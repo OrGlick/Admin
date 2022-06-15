@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="240dp"
         android:layout_height="240dp"
-        android:background="@drawable/admin"
+        android:background="@drawable/adminforlogin"
         android:layout_marginTop="50dp"
         android:layout_gravity="center"
         />

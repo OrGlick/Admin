@@ -3,15 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragmentExplanations.TrainFacesExplanation"
+    tools:context=".Fragments.TrainFacesExplanation"
     android:orientation="vertical"
     android:id="@+id/fragment_train_explanation">
 
     <TextView
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="250dp"
         android:layout_marginRight="20dp"
         android:text="כעת המצלמה תיפתח באופן אוטומטי 3 פעמים. בכל פעם צלם תמונה של פני האדם. החזק את המצלמה בצורה יציבה."
         android:textSize="20sp"

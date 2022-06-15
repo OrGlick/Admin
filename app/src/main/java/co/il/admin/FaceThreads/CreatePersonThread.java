@@ -1,12 +1,10 @@
-package co.il.admin.faceThreads;
+package co.il.admin.FaceThreads;
 
 import android.os.Handler;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,7 +12,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.microsoft.projectoxford.face.FaceServiceClient;
 import com.microsoft.projectoxford.face.FaceServiceRestClient;
-import com.microsoft.projectoxford.face.contract.CreatePersonResult;
 import com.microsoft.projectoxford.face.rest.ClientException;
 
 import java.io.IOException;
@@ -70,14 +67,12 @@ public class CreatePersonThread extends Thread
             }
         }
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        String personName = firebaseUser.getDisplayName();
         String exceptionMessage = "";
         Message message = new Message();
         try
         {
             message.obj = faceServiceClient.createPerson
-                    (Helper.PERSON_GROUP_ID, personName, null);
+                    (Helper.PERSON_GROUP_ID, "p", null);
             message.what = Helper.SUCCESS_CODE;
         }
         catch (ClientException | IOException e)
