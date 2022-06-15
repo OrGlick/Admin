@@ -3,17 +3,27 @@ package co.il.admin.faceThreads;
 import android.os.Handler;
 import android.os.Message;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.microsoft.projectoxford.face.FaceServiceClient;
+import com.microsoft.projectoxford.face.FaceServiceRestClient;
 import com.microsoft.projectoxford.face.contract.TrainingStatus;
 import com.microsoft.projectoxford.face.rest.ClientException;
 
 import java.io.IOException;
 
+import co.il.admin.AzureCreds;
 import co.il.admin.Helper;
-import co.il.admin.MyFaceClient;
 
 public class GetTrainingStatusThread extends Thread
 {
     Handler handler;
+    FaceServiceClient faceServiceClient;
 
     public GetTrainingStatusThread(Handler handler)
     {
@@ -24,47 +34,70 @@ public class GetTrainingStatusThread extends Thread
     public void run() {
         super.run();
 
-        boolean isDone = false;
-
-        Message[] messages = new Message[1000];
-        Message[] errorMessages = new Message[1000];
-        for (int i = 0; i < messages.length; i++)
+        // get Azure creds from firebase
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("AzureCreds");
+        databaseReference.addValueEventListener(new ValueEventListener()
         {
-            messages[i] = new Message();
-            errorMessages[i] = new Message();
-        }
-        int count = 0;
-        String exceptionMessage;
-        while (!isDone)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                AzureCreds creds = snapshot.getValue(AzureCreds.class);
+                faceServiceClient = new FaceServiceRestClient(creds.getEndPoint(), creds.getApiKey());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {}
+        });
+
+        //wait until we get the Azure creds from firebase and create the faceServiceClient
+        //if we're still waiting for the creds, faceServiceClient we be null
+        while (faceServiceClient == null)
         {
             try
             {
-                TrainingStatus status = MyFaceClient.faceServiceClient
-                        .getPersonGroupTrainingStatus(Helper.PERSON_GROUP_ID);
-                messages[count].what = Helper.SUCCESS_CODE;
-                messages[count].obj = status;
+                //wait 10 milliseconds
+                Thread.sleep(10);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        boolean isDone = false;
+        String exceptionMessage;
+        while (!isDone)
+        {
+            Message message = new Message();
+            Message sleepErrorMessage = new Message();
+            try
+            {
+                TrainingStatus status = faceServiceClient.getPersonGroupTrainingStatus(Helper.PERSON_GROUP_ID);
+                message.what = Helper.SUCCESS_CODE;
+                message.obj = status;
                 if (status.status == TrainingStatus.Status.Succeeded)
                     isDone = true;
             }
             catch (ClientException | IOException e)
             {
                 exceptionMessage = String.format("error on getting training status: %s", e.getMessage());
-                messages[count].obj = exceptionMessage;
-                messages[count].what = Helper.ERROR_CODE;
+                message.obj = exceptionMessage;
+                message.what = Helper.ERROR_CODE;
             }
-            handler.sendMessage(messages[count]);
+            handler.sendMessage(message);
             try
             {
-                Thread.sleep(3000);
+                Thread.sleep(2000);
             }
             catch (Exception e)
             {
                 exceptionMessage = String.format("error on getting training status: %s", e.getMessage());
-                errorMessages[count].obj = exceptionMessage;
-                errorMessages[count].what = Helper.ERROR_CODE;
-                handler.sendMessage(errorMessages[count]);
+                sleepErrorMessage.obj = exceptionMessage;
+                sleepErrorMessage.what = Helper.ERROR_CODE;
+                handler.sendMessage(sleepErrorMessage);
             }
-            count++;
         }
     }
 }

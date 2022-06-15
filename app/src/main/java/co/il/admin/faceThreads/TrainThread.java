@@ -3,17 +3,27 @@ package co.il.admin.faceThreads;
 import android.os.Handler;
 import android.os.Message;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.microsoft.projectoxford.face.FaceServiceClient;
+import com.microsoft.projectoxford.face.FaceServiceRestClient;
 import com.microsoft.projectoxford.face.rest.ClientException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import co.il.admin.AzureCreds;
 import co.il.admin.Helper;
-import co.il.admin.MyFaceClient;
 
 public class TrainThread extends Thread
 {
     Handler handler;
+    FaceServiceClient faceServiceClient;
 
     public TrainThread(Handler handler)
     {
@@ -24,12 +34,44 @@ public class TrainThread extends Thread
     public void run() {
         super.run();
 
+        // get Azure creds from firebase
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("AzureCreds");
+        databaseReference.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                AzureCreds creds = snapshot.getValue(AzureCreds.class);
+                faceServiceClient = new FaceServiceRestClient(creds.getEndPoint(), creds.getApiKey());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {}
+        });
+
+        //wait until we get the Azure creds from firebase and create the faceServiceClient
+        //if we're still waiting for the creds, faceServiceClient we be null
+        while (faceServiceClient == null)
+        {
+            try
+            {
+                //wait 10 milliseconds
+                Thread.sleep(10);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
         String exceptionMessage ;
         Message message = new Message();
 
         try
         {
-            MyFaceClient.faceServiceClient.trainPersonGroup(Helper.PERSON_GROUP_ID);
+            faceServiceClient.trainPersonGroup(Helper.PERSON_GROUP_ID);
             message.what = Helper.SUCCESS_CODE;
         }
         catch (ClientException | IOException e)

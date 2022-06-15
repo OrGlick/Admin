@@ -53,6 +53,7 @@ public class TrainFacesExplanation extends Fragment implements View.OnClickListe
     ProgressBar progressBar;
     ProgressDialog progressDialog;
     User user;
+    boolean personCreated = false;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference userReference;
@@ -80,17 +81,24 @@ public class TrainFacesExplanation extends Fragment implements View.OnClickListe
 
 
     @Override
-    public void onClick(View view) {
-        createPerson();
+    public void onClick(View view)
+    {
+        if(!personCreated)
+            createPerson();
+        else
+            checkAndAskForPermissionsAndAddTheFaces();
     }
 
     private void createPerson() {
         Handler createPersonHandler = new Handler(new Handler.Callback()
         {
             @Override
-            public boolean handleMessage(@NonNull Message message) {
+            public boolean handleMessage(@NonNull Message message)
+            {
                 progressBar.setVisibility(View.INVISIBLE);
-                if (message.what == Helper.SUCCESS_CODE) {
+                if (message.what == Helper.SUCCESS_CODE)
+                {
+                    personCreated = true;
                     CreatePersonResult createPersonResult = (CreatePersonResult) message.obj;
                     progressBar.setVisibility(View.VISIBLE);
                     saveUserToFireBase(createPersonResult);
@@ -110,7 +118,7 @@ public class TrainFacesExplanation extends Fragment implements View.OnClickListe
 
     public void saveUserToFireBase(CreatePersonResult createPersonResult)
     {
-        userReference = firebaseDatabase.getReference("Users").push();
+        userReference = firebaseDatabase.getReference("Users/" + currentConnectedUser.getUid());
         String databaseKey = userReference.getKey();
         String firebaseUid = currentConnectedUser.getUid();
         String nameFromFirebase = currentConnectedUser.getDisplayName();
@@ -135,10 +143,26 @@ public class TrainFacesExplanation extends Fragment implements View.OnClickListe
         }
     }
 
-    int count = 0;
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted ->
+            {
+                if (isGranted)
+                {
+                    addFaces();
+                }
+                else
+                {
+                    // Explain to the user that the feature is unavailable because the
+                    // features requires a permission that the user has denied. At the
+                    // same time, respect the user's decision. Don't link to system
+                    // settings in an effort to convince the user to change their
+                    // decision.
+                }
+            });
+
+    int count = 1;
     private void addFaces()
     {
-        count++;
         if (count <= 3)
         {
             Intent intentToCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -156,20 +180,23 @@ public class TrainFacesExplanation extends Fragment implements View.OnClickListe
 
     }
 
-    private void handleImage() {
+    private void handleImage()
+    {
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
-                , new ActivityResultCallback<ActivityResult>() {
+                , new ActivityResultCallback<ActivityResult>()
+                {
                     @Override
                     public void onActivityResult(ActivityResult result)
                     {
-                        progressDialog = new ProgressDialog(getActivity());
-                        progressDialog.setCancelable(false);
-                        progressDialog.show();
-                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                            Bitmap bitmap = (Bitmap) result.getData().getExtras().get("data");
-                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream);
-                            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null)
+                        {
+                            progressDialog = new ProgressDialog(getActivity());
+                            progressDialog.setCancelable(false);
+                            progressDialog.show();
+
+                            ByteArrayInputStream inputStream = bitmapToInputStream(result);
+
+                            // טיפול בתמונה
                             Handler handler = new Handler(new Handler.Callback()
                             {
                                 @Override
@@ -177,40 +204,32 @@ public class TrainFacesExplanation extends Fragment implements View.OnClickListe
                                 {
                                     progressDialog.dismiss();
 
-                                    if (message.what == Helper.SUCCESS_CODE)
+                                    if (message.what == Helper.SUCCESS_CODE) // אם התמונה הוספה בהצלחה
                                     {
-                                        addFaces();//continue to add faces
+                                        count++;
+                                        addFaces(); //continue to add faces
                                     }
-                                    else if (message.what == Helper.ERROR_CODE)
+                                    else if (message.what == Helper.ERROR_CODE) // in case of error
                                     {
-                                        Helper.showError(String.valueOf(message.obj), getActivity());
+                                        Helper.showError(String.valueOf(message.obj), getActivity()); // הצגת השגיאה בalert dialog
                                     }
                                     return true;
                                 }
                             });
-                            AddFaceThread addFaceThread = new AddFaceThread(handler, inputStream,
-                                    user.azurePersonId);
+                            // הוספת התמונה לperson ע"י thread
+                            AddFaceThread addFaceThread = new AddFaceThread(handler, inputStream, user.azurePersonId);
                             addFaceThread.start();
                         }
                     }
+
+                    // הפיכת הbitmap ל ByteArrayInputStream
+                    private ByteArrayInputStream bitmapToInputStream(ActivityResult result)
+                    {
+                        Bitmap bitmap = (Bitmap) result.getData().getExtras().get("data"); //מחלץ את הbitmap מהתוצאה של הintent
+                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream); // דחיסת הbitmap לתוך ByteArrayOutputStream
+                        return new ByteArrayInputStream(outputStream.toByteArray()); // הפיכת ה outputStream ל inputStream והחזרתו
+                    }
                 });
-    }
-
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted ->
-            {
-                if (isGranted) {
-                    addFaces();
-                } else {
-                    // Explain to the user that the feature is unavailable because the
-                    // features requires a permission that the user has denied. At the
-                    // same time, respect the user's decision. Don't link to system
-                    // settings in an effort to convince the user to change their
-                    // decision.
-                }
-            });
-
-    public TrainFacesExplanation() {
-        // Required empty public constructor
     }
 }

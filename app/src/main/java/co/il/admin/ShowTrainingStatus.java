@@ -1,5 +1,6 @@
 package co.il.admin;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,12 +23,7 @@ import co.il.admin.faceThreads.TrainThread;
 public class ShowTrainingStatus extends Fragment
 {
     View view;
-
     TextView textView;
-
-    public ShowTrainingStatus() {
-        // Required empty public constructor
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,7 +68,9 @@ public class ShowTrainingStatus extends Fragment
                     textView.setText(String.valueOf(trainingStatus.status));
                     if (trainingStatus.status == TrainingStatus.Status.Succeeded)
                     {
-                        requireActivity().finish();
+                        Intent intent = new Intent(requireActivity(), ControlActivity.class);
+                        intent.putExtra("add user state", "success");
+                        startActivity(intent);
                     }
                 }
                 else

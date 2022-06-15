@@ -27,8 +27,8 @@ import java.util.List;
 
 import co.il.admin.fragmentExplanations.SignInExplanation;
 
-public class AddUsers extends AppCompatActivity{
-
+public class AddUsers extends AppCompatActivity
+{
     FragmentManager fragmentManager;
 
     @Override

@@ -23,6 +23,7 @@ import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import co.il.admin.R;
 import co.il.admin.Helper;
@@ -89,25 +90,9 @@ public class SignInExplanation extends Fragment implements View.OnClickListener 
             // ...
             if (response != null)
             {
-                Helper.showError(String.valueOf(response.getError().getErrorCode()), getActivity());
-                /*
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                        .setTitle("Error")
-                        .setMessage(response.getError().getErrorCode())
-                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-                 */
+                Helper.showError(String.valueOf(Objects.requireNonNull(response.getError()).getErrorCode()), getActivity());
+
             }
         }
-    }
-
-    public SignInExplanation() {
-        // Required empty public constructor
     }
 }
