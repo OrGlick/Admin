@@ -14,13 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Admin">
         <activity
-            android:name=".ControlActivity"
+            android:name=".Activities.ControlActivity"
             android:exported="false" />
         <activity
-            android:name=".AddUsers"
+            android:name=".Activities.AddUsersActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

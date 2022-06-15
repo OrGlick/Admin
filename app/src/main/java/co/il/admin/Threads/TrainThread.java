@@ -1,4 +1,4 @@
-package co.il.admin.FaceThreads;
+package co.il.admin.Threads;
 
 import android.os.Handler;
 import android.os.Message;
@@ -19,20 +19,18 @@ import java.io.IOException;
 import co.il.admin.AzureCreds;
 import co.il.admin.Helper;
 
-public class CreatePersonThread extends Thread
+public class TrainThread extends Thread
 {
-
     Handler handler;
     FaceServiceClient faceServiceClient;
 
-    public CreatePersonThread(Handler handler)
+    public TrainThread(Handler handler)
     {
         this.handler = handler;
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         super.run();
 
         // get Azure creds from firebase
@@ -67,12 +65,12 @@ public class CreatePersonThread extends Thread
             }
         }
 
-        String exceptionMessage = "";
+        String exceptionMessage ;
         Message message = new Message();
+
         try
         {
-            message.obj = faceServiceClient.createPerson
-                    (Helper.PERSON_GROUP_ID, "p", null);
+            faceServiceClient.trainPersonGroup(Helper.PERSON_GROUP_ID);
             message.what = Helper.SUCCESS_CODE;
         }
         catch (ClientException | IOException e)

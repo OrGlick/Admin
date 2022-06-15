@@ -1,4 +1,4 @@
-package co.il.admin;
+package co.il.admin.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,8 +15,11 @@ import android.widget.TextView;
 
 import com.microsoft.projectoxford.face.contract.TrainingStatus;
 
-import co.il.admin.FaceThreads.GetTrainingStatusThread;
-import co.il.admin.FaceThreads.TrainThread;
+import co.il.admin.Activities.ControlActivity;
+import co.il.admin.Helper;
+import co.il.admin.R;
+import co.il.admin.Threads.GetTrainingStatusThread;
+import co.il.admin.Threads.TrainThread;
 
 public class ShowTrainingStatus extends Fragment
 {

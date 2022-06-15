@@ -1,4 +1,4 @@
-package co.il.admin.FaceThreads;
+package co.il.admin.Threads;
 
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +12,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.microsoft.projectoxford.face.FaceServiceClient;
 import com.microsoft.projectoxford.face.FaceServiceRestClient;
+import com.microsoft.projectoxford.face.contract.TrainingStatus;
 import com.microsoft.projectoxford.face.rest.ClientException;
 
 import java.io.IOException;
@@ -19,12 +20,12 @@ import java.io.IOException;
 import co.il.admin.AzureCreds;
 import co.il.admin.Helper;
 
-public class TrainThread extends Thread
+public class GetTrainingStatusThread extends Thread
 {
     Handler handler;
     FaceServiceClient faceServiceClient;
 
-    public TrainThread(Handler handler)
+    public GetTrainingStatusThread(Handler handler)
     {
         this.handler = handler;
     }
@@ -65,20 +66,38 @@ public class TrainThread extends Thread
             }
         }
 
-        String exceptionMessage ;
-        Message message = new Message();
-
-        try
+        boolean isDone = false;
+        String exceptionMessage;
+        while (!isDone)
         {
-            faceServiceClient.trainPersonGroup(Helper.PERSON_GROUP_ID);
-            message.what = Helper.SUCCESS_CODE;
+            Message message = new Message();
+            Message sleepErrorMessage = new Message();
+            try
+            {
+                TrainingStatus status = faceServiceClient.getPersonGroupTrainingStatus(Helper.PERSON_GROUP_ID);
+                message.what = Helper.SUCCESS_CODE;
+                message.obj = status;
+                if (status.status == TrainingStatus.Status.Succeeded)
+                    isDone = true;
+            }
+            catch (ClientException | IOException e)
+            {
+                exceptionMessage = String.format("error on getting training status: %s", e.getMessage());
+                message.obj = exceptionMessage;
+                message.what = Helper.ERROR_CODE;
+            }
+            handler.sendMessage(message);
+            try
+            {
+                Thread.sleep(2000);
+            }
+            catch (Exception e)
+            {
+                exceptionMessage = String.format("error on getting training status: %s", e.getMessage());
+                sleepErrorMessage.obj = exceptionMessage;
+                sleepErrorMessage.what = Helper.ERROR_CODE;
+                handler.sendMessage(sleepErrorMessage);
+            }
         }
-        catch (ClientException | IOException e)
-        {
-            exceptionMessage = String.format("create person failed: %s", e.getMessage());
-            message.obj = exceptionMessage;
-            message.what = Helper.ERROR_CODE;
-        }
-        handler.sendMessage(message);
     }
 }

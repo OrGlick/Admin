@@ -1,4 +1,4 @@
-package co.il.admin;
+package co.il.admin.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -6,9 +6,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
-import co.il.admin.Fragments.SignInExplanation;
+import co.il.admin.Fragments.SignUp;
+import co.il.admin.R;
 
-public class AddUsers extends AppCompatActivity
+public class AddUsersActivity extends AppCompatActivity
 {
     FragmentManager fragmentManager;
 
@@ -17,7 +18,7 @@ public class AddUsers extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_users);
 
-        SignInExplanation signInFragment = new SignInExplanation();
+        SignUp signInFragment = new SignUp();
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.add_users_linear_layout, signInFragment, "sign in explanation fragment");

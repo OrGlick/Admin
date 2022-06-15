@@ -1,4 +1,4 @@
-package co.il.admin.FaceThreads;
+package co.il.admin.Threads;
 
 import android.os.Handler;
 import android.os.Message;

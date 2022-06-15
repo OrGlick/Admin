@@ -21,14 +21,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
 
 import co.il.admin.R;
 import co.il.admin.Helper;
 
-public class SignInExplanation extends Fragment implements View.OnClickListener {
+public class SignUp extends Fragment implements View.OnClickListener {
 
     View view;
     EditText etEmail, etPassword;
@@ -199,10 +198,10 @@ public class SignInExplanation extends Fragment implements View.OnClickListener 
 
     private void moveToTrainFacesFragment()
     {
-        TrainFacesExplanation trainFacesExplanation = new TrainFacesExplanation();
+        TakePicturesAndTrainFaces takePicturesAndTrainFaces = new TakePicturesAndTrainFaces();
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.add_users_linear_layout, trainFacesExplanation
+        fragmentTransaction.replace(R.id.add_users_linear_layout, takePicturesAndTrainFaces
                 , "train faces explanation");
         fragmentTransaction.commit();
     }

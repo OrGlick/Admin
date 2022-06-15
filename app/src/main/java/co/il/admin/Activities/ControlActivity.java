@@ -1,4 +1,4 @@
-package co.il.admin;
+package co.il.admin.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +20,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
+
+import co.il.admin.Activities.AddUsersActivity;
+import co.il.admin.R;
 
 public class ControlActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnAddUsers, btnSetElectionsDate;
@@ -136,7 +139,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         if(view == btnAddUsers)
         {
             //move to add users activity
-            Intent intent = new Intent(this, AddUsers.class);
+            Intent intent = new Intent(this, AddUsersActivity.class);
             startActivity(intent);
         }
         else if(view == btnSetElectionsDate)

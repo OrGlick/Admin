@@ -38,13 +38,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import co.il.admin.R;
-import co.il.admin.ShowTrainingStatus;
 import co.il.admin.User;
-import co.il.admin.FaceThreads.AddFaceThread;
-import co.il.admin.FaceThreads.CreatePersonThread;
+import co.il.admin.Threads.AddFaceThread;
+import co.il.admin.Threads.CreatePersonThread;
 import co.il.admin.Helper;
 
-public class TrainFacesExplanation extends Fragment implements View.OnClickListener {
+public class TakePicturesAndTrainFaces extends Fragment implements View.OnClickListener {
 
     View view;
     Button btnContinueToCamera;
