@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                     if(firebaseUser.getUid().equals("uQ2vFKEhjOgaa0KoQlh7eBDLIJm1")) //admin uid
                                     {
+                                        progressDialog.dismiss();
                                         // move to control activity
                                         Intent intentToAddUsersActivity = new Intent(MainActivity.this, ControlActivity.class);
                                         startActivity(intentToAddUsersActivity);
