@@ -18,6 +18,8 @@ public class AddUsersActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_users);
 
+        getSupportActionBar().hide(); // remove action bar
+
         SignUp signInFragment = new SignUp();
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

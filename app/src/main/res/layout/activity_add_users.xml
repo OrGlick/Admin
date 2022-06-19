@@ -6,7 +6,4 @@
     android:orientation="vertical"
     tools:context=".Activities.AddUsersActivity"
     android:id="@+id/add_users_linear_layout">
-
-
-
 </LinearLayout>

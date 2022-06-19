@@ -37,6 +37,8 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
+
+        getSupportActionBar().hide(); // remove action bar
         init();
         initDatePickerDialog();
         showCurrentElectionsDate();
